@@ -11,10 +11,10 @@ const App = () => {
   const part3 = "State of a component";
   const exercises3 = 14;
 
-  const Header = course => {
+  const Header = () => {
     return (
       <div>
-        <h1>{course}</h1>
+        {course}
       </div>
     )
   };
@@ -45,7 +45,7 @@ const App = () => {
 
   return (
     <div>
-     <Header course={course}/>
+     <Header/>
      <Content/>
      <Total/>
     </div>
