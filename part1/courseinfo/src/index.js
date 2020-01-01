@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
 const Header = ({ course }) => <h2>{course}</h2>;
 
-const Part = ({ name, exercises }) => (
+const Part = props => (
   <p>
-    {name} {exercises}
+    {props.name} {props.exercises}
   </p>
 );
+
+//Alternative
+
+// const Part = ({ name, exercises }) => (
+//   <p>
+//     {name} {exercises}
+//   </p>
+// );
+
+//-----------//
 
 const Content = ({ course }) => {
   return (
@@ -32,7 +42,7 @@ const Total = ({ course }) => {
 };
 
 const App = () => {
-  const course ={
+  const course = {
     name: "Half Stack App Dev",
     parts: [
       {
@@ -47,8 +57,8 @@ const App = () => {
         name: "State of a component",
         exercises: 14
       }
-    ],
-  }
+    ]
+  };
 
   return (
     <div>
@@ -59,4 +69,30 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const Counter = props => {
+  const [counter, setCounter] = useState(0);
+
+  // setTimeout(() => setCounter(counter+1),1000);
+  const setToValue = value => {
+    return () => {
+      setCounter(value);
+    };
+  };
+
+  const Display = ({ counter }) => <div>{counter}</div>;
+
+  const Button = ({ onClick, text }) => (
+    <button onClick={onClick}>{text}</button>
+  );
+
+  return (
+    <div>
+      <Button onClick={setToValue(counter - 1)} text="Decrease" />{" "}
+      <Display counter={counter} />{" "}
+      <Button onClick={setToValue(counter + 1)} text="Increase" />
+    </div>
+  );
+};
+
+// ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<Counter />, document.getElementById("root"));
