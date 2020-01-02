@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Note from "./Note";
+import noteService from '../services/note'
 
 const Notes = props => {
-  console.log('props.notes :', props.notes);
-  const [notes, setNotes] = useState(props.notes);
-  const [newNote, setNewNote] = useState("New Note..");
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState("");
 
-  const rows = () => notes.map(note => <li key={note.id}>{note.content}</li>);
+  useEffect(() => {
+    noteService
+      .getAll()
+      .then(initialNotes => {
+        setNotes(initialNotes)
+      })
+  }, [])
 
   const addNote = event => {
     event.preventDefault();
@@ -15,20 +22,43 @@ const Notes = props => {
       important: Math.random() > 0.5,
       id: notes.length + 1,
     }
-    setNotes(notes.concat(noteObject));
-    setNewNote("");
+    noteService
+      .create(noteObject)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
+      })
   };
+
+  const toggleImportanceOf = id => {
+  const note = notes.find(n => n.id === id)
+  const changedNote = { ...note, important: !note.important }
+
+  noteService
+  .update(id, changedNote)
+  .then(returnedNote => {
+    setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+  })
+
+}
 
   const handleNoteChange = e => {
     setNewNote(e.target.value);
   };
 
+  const rows = () => notes.map(note =>
+    <Note
+      key={note.id}
+      note={note}
+      toggleImportance={() => toggleImportanceOf(note.id)}
+    />
+  )
+
   return (
     <div>
       <h1>Notes</h1>
-      <ul>{rows()}</ul>
+     {rows()}
       <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
+        <input value={newNote} onChange={handleNoteChange} placeholder=""/>
         <button type="submit">Add</button>
       </form>
     </div>
