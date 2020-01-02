@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 
-const Notes = () => {
-  const [notes, setNotes] = useState([]);
+const Notes = props => {
+  console.log('props.notes :', props.notes);
+  const [notes, setNotes] = useState(props.notes);
   const [newNote, setNewNote] = useState("New Note..");
 
-  const rows = () => notes.map(note => <li key={note.id}>{note}</li>);
+  const rows = () => notes.map(note => <li key={note.id}>{note.content}</li>);
 
-  const addNote = (event) => {
-    event.preventDefault()  
-    setNotes(notes.concat(newNote))
-    setNewNote('')
-  }
+  const addNote = event => {
+    event.preventDefault();
+    const noteObject = {
+      content: newNote,
+      date: new Date().toISOString(),
+      important: Math.random() > 0.5,
+      id: notes.length + 1,
+    }
+    setNotes(notes.concat(noteObject));
+    setNewNote("");
+  };
 
   const handleNoteChange = e => {
     setNewNote(e.target.value);
