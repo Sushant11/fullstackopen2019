@@ -44,7 +44,7 @@ const App = props => {
 
   const handleDelete = id => {
     var r = window.confirm(`Delete ${id}?`);
-    if (r == true) {
+    if (r === true) {
       personService.deleted(id).then(response => {
         alert(`${id} Deleted`, document.location.reload());
         return response.data;
