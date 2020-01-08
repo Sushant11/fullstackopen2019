@@ -1,11 +1,23 @@
-GET http://localhost:3001/api/blogs
+# GET http://localhost:3001/api/blogs
+
+# DELETE  http://localhost:3001/api/blogs/5e14aef58100e526c8da744e
 
 # POST  http://localhost:3001/api/blogs
 # Content-Type: application/json
 
 # {
-#     "title" : "Part 4 BLog",
-#     "author" : "SC",
-#     "url" : "http://asdsa.com",
-#     "likes" : 34
+#     "title" : "After Delete",
+#     "author" : "SCSasdS",
+#     "url" : "http://asaasddsa.com",
+#     "likes" : 123
 # }
+
+PUT  http://localhost:3001/api/blogs/5e15b84e1cc7b91acde699b6
+Content-Type: application/json
+
+{
+    "title" : "After Delete",
+    "author" : "SCSasdS",
+    "url" : "http://asaasddsa.com",
+    "likes" : 8818
+}
