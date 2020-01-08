@@ -2,5 +2,5 @@
 
 Full Stack Open Course
 
-# Phonebook CRUD App hosted @
+## Phonebook CRUD App
 https://phonebookfullstackcourse.herokuapp.com/
