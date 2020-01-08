@@ -1,4 +1,19 @@
 const listHelper = require('../utils/list_helper')
+const supertest = require('supertest')
+const mongoose = require('mongoose')
+const app = require('../app')
+const api = supertest(app)
+const Blog = require('../models/blog')
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+
+  let blogObject = new Blog(listHelper.initialBlogs[0])
+  await blogObject.save()
+
+  blogObject = new Blog(listHelper.initialBlogs[1])
+  await blogObject.save()
+})
 
 test('dummy returns one', () => {
   const blogs = []
@@ -62,5 +77,29 @@ describe('total likes', () => {
     test('when list has only one blog equals the likes of that', () => {
       const result = listHelper.totalLikes(blogs)
       expect(result).toBe(36)
+    })
+
+    test('a valid blog can be added ', async () => {
+      const newBlog = {
+        title: 'async/await simplifies making async calls',
+        author: "JEST",
+        url: "http://asdsad.das",
+        likes: 6
+      }
+    
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    
+      const blogsAtEnd = await listHelper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(listHelper.initialBlogs.length + 1)
+    
+      // const contents = blogsAtEnd.map(n => n.content)
+      // expect(contents).(
+      //   'async/await simplifies making async calls'
+      // )
     })
   })
