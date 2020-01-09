@@ -1,10 +1,18 @@
 const personsRouter = require("express").Router();
+const jwt = require("jsonwebtoken");
 const Person = require("../models/person");
+const User = require("../models/user");
 
-personsRouter.get("/", (req, res) => {
-  Person.find({}).then(persons => {
-    res.json(persons.map(person => person.toJSON()));
+personsRouter.get("/", async (req, res) => {
+  // Person.find({}).then(persons => {
+  //   res.json(persons.map(person => person.toJSON()));
+  // });
+  const persons = await Person.find({}).populate("person", {
+    username: 1,
+    name: 1
   });
+
+  res.json(persons.map(p => p.toJSON()));
 });
 
 personsRouter.get("/info", (req, res) => {
@@ -27,8 +35,25 @@ personsRouter.get("/:id", (req, res) => {
   }
 });
 
-personsRouter.post("/", (req, res, next) => {
+const getTokenFrom = request => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.substring(7);
+  }
+  return null;
+};
+
+personsRouter.post("/", async (req, res, next) => {
   const body = req.body;
+
+  const token = getTokenFrom(req)
+
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: "token missing or invalid" });
+  }
+
+  const user = await User.findById(body.userId);
 
   if (!body.name) {
     return res.status(400).json({
@@ -38,16 +63,24 @@ personsRouter.post("/", (req, res, next) => {
     const person = new Person({
       name: body.name,
       number: body.number,
-      id: body.id
+      id: body.id,
+      user: user._id
     });
-
-    person
-      .save()
-      .then(savedPerson => {
-        res.json(savedPerson.toJSON());
-      })
-      .catch(error => next(error));
+    try {
+      const savedPerson = await person.save();
+      user.persons = user.persons.concat(savedPerson._id);
+      await user.save();
+      res.json(savedPerson.toJSON());
+    } catch (exception) {
+      next(exception);
+    }
   }
+  // person
+  //   .save()
+  //   .then(savedPerson => {
+  //     res.json(savedPerson.toJSON());
+  //   })
+  //   .catch(error => next(error));
 });
 
 personsRouter.delete("/:id", (req, res, next) => {
@@ -59,4 +92,4 @@ personsRouter.delete("/:id", (req, res, next) => {
     .catch(error => next(error));
 });
 
-module.exports = personsRouter
+module.exports = personsRouter;

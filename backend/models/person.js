@@ -6,12 +6,18 @@ const personSchema = new mongoose.Schema({
     minlength: 5,
     required: true
   },
-  number:{
+  number: {
     type: String,
     minlength: 5,
     required: true
   },
-  id: Number
+  id: Number,
+  users: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }
+  ]
 });
 
 personSchema.set("toJSON", {
