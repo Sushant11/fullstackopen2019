@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import personService from "../services/persons";
+import loginService from '../services/login' 
 import Notification from './Notification'
 
 const App = props => {
@@ -9,6 +10,10 @@ const App = props => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNubmer] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [username, setUsername] = useState('') 
+  const [password, setPassword] = useState('') 
+  const [user, setUser] = useState(null)
+
 
   useEffect(() => {
     personService.getAll().then(response => setPersons(response.data));
@@ -53,6 +58,24 @@ const App = props => {
     }
   };
 
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
+
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
   const rows = () =>
     persons.map(person => (
       <Persons
@@ -65,6 +88,43 @@ const App = props => {
   return (
     <div>
       <Notification message={errorMessage} />
+      <h4>Login</h4>
+      <form onSubmit={handleLogin}>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+              Username
+              </td>
+              <td>  <input
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          /></td>
+            </tr>
+            <tr>
+              <td>
+                Password
+              </td>
+              <td>
+              <input
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+              </td>
+            </tr>
+            <tr>
+              <td>
+              <button type="submit">login</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+
       <h2>Phonebook</h2>
       <PersonForm
         addPerson={addPerson}

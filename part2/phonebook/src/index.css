@@ -13,7 +13,7 @@ code {
 }
 
 .error {
-  color: green;
+  color: rgb(25, 122, 187);
   background: lightgrey;
   width: 20%;
   font-size: 20px;
