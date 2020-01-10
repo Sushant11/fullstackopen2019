@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PersonForm from "./PersonForm";
+import Login from "./Login";
 import Persons from "./Persons";
 import personService from "../services/persons";
-import loginService from '../services/login' 
-import Notification from './Notification'
+import loginService from "../services/login";
+import Notification from "./Notification";
 
 const App = props => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNubmer] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
-  const [user, setUser] = useState(null)
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     personService.getAll().then(response => setPersons(response.data));
@@ -35,8 +35,8 @@ const App = props => {
         setPersons(persons.concat(response.data));
         setNewName("");
         setNewNubmer("");
-        setErrorMessage('Added')
-      })
+        setErrorMessage("Added");
+      });
     }
   };
 
@@ -58,23 +58,25 @@ const App = props => {
     }
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async event => {
+    event.preventDefault();
     try {
       const user = await loginService.login({
-        username, password,
-      })
+        username,
+        password
+      });
 
-      setUser(user)
-      setUsername('')
-      setPassword('')
+      personService.setToken(user.token)
+      setUser(user);
+      setUsername("");
+      setPassword("");
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage("Wrong credentials");
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+        setErrorMessage(null);
+      }, 5000);
     }
-  }
+  };
 
   const rows = () =>
     persons.map(person => (
@@ -88,53 +90,34 @@ const App = props => {
   return (
     <div>
       <Notification message={errorMessage} />
-      <h4>Login</h4>
-      <form onSubmit={handleLogin}>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-              Username
-              </td>
-              <td>  <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          /></td>
-            </tr>
-            <tr>
-              <td>
-                Password
-              </td>
-              <td>
-              <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-              </td>
-            </tr>
-            <tr>
-              <td>
-              <button type="submit">login</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
+     
 
-      <h2>Phonebook</h2>
-      <PersonForm
-        addPerson={addPerson}
-        newName={newName}
-        newNumber={newNumber}
-        handleNumberChange={handleNumberChange}
-        handleNameChange={handleNameChange}
-      />
-      <h2>Numbers</h2>
-      {rows()}
+      {user === null ?
+      <Fragment> <h4>Login</h4> 
+      <Login 
+      username={username}
+      password={password}
+      setUsername={setUsername}
+      setPassword={setPassword}
+      handleLogin={handleLogin}
+      /> </Fragment>
+     :
+     <Fragment>
+     <h2>Phonebook</h2>
+     <p>{user.name} logged in</p>
+     <PersonForm
+       addPerson={addPerson}
+       newName={newName}
+       newNumber={newNumber}
+       handleNumberChange={handleNumberChange}
+       handleNameChange={handleNameChange}
+     />
+     <h2>Numbers</h2>
+     {rows()}
+     </Fragment>
+    }
+   
+     
     </div>
   );
 };

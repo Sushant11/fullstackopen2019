@@ -46,7 +46,7 @@ const getTokenFrom = request => {
 personsRouter.post("/", async (req, res, next) => {
   const body = req.body;
 
-  const token = getTokenFrom(req)
+  const token = getTokenFrom(req);
 
   const decodedToken = jwt.verify(token, process.env.SECRET);
   if (!token || !decodedToken.id) {

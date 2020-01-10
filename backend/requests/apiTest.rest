@@ -1,13 +1,14 @@
 # DELETE http://localhost:3001/api/persons/2
 
-# POST  http://localhost:3001/api/persons
-# Content-Type: application/json
-# Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNodHJlIiwiaWQiOiI1ZTE3NjhkNjljY2RhZDM5ZjRjMzU5OTkiLCJpYXQiOjE1Nzg1OTI0ODJ9.fTOP5-hvpPHQvovwmUYi0Qu1G8WnbFzAiqz_8YeDqy8
+POST  http://localhost:3001/api/persons
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNodHJlIiwiaWQiOiI1ZTE3NjhkNjljY2RhZDM5ZjRjMzU5OTkiLCJpYXQiOjE1Nzg1OTI0ODJ9.fTOP5-hvpPHQvovwmUYi0Qu1G8WnbFzAiqz_8YeDqy8
 
-# {
-#     "name" : "Sasdasdsa",
-#     "number" : "412123"
-# }
+{
+    "name" : "Sasdasdsa",
+    "number" : "412123",
+    "userId" : "5e1768d69ccdad39f4c35999"
+}
 
 # GET http://localhost:3001/api/users
 
