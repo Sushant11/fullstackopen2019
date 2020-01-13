@@ -8,8 +8,8 @@ personsRouter.get("/", async (req, res) => {
   //   res.json(persons.map(person => person.toJSON()));
   // });
   const persons = await Person.find({}).populate("person", {
-    username: 1,
-    name: 1
+    name: 1,
+    number: 1
   });
 
   res.json(persons.map(p => p.toJSON()));
@@ -24,15 +24,9 @@ personsRouter.get("/info", (req, res) => {
 });
 
 personsRouter.get("/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find(person => person.id === id);
-  if (person) {
-    Person.findById(request.params.id).then(note => {
-      req.json(note.toJSON());
-    });
-  } else {
-    res.status(404).end();
-  }
+  Person.findById(req.params.id).then(note => {
+    res.json(note.toJSON());
+  });
 });
 
 const getTokenFrom = request => {
@@ -54,7 +48,6 @@ personsRouter.post("/", async (req, res, next) => {
   }
 
   const user = await User.findById(decodedToken.id);
-  console.log('user :', user);
 
   if (!body.name) {
     return res.status(400).json({
@@ -65,12 +58,11 @@ personsRouter.post("/", async (req, res, next) => {
       user: user._id,
       name: body.name,
       number: body.number,
-      id: body.id,
     });
     try {
       const savedPerson = await person.save();
-      user.persons = user.persons.concat(savedPerson._id);
       console.log('savedPerson :', savedPerson);
+      user.persons = user.persons.concat(savedPerson._id);
       await user.save();
       res.json(savedPerson.toJSON());
     } catch (exception) {

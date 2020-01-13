@@ -23,9 +23,9 @@ const App = props => {
     e.preventDefault();
 
     const personObject = {
-      name: newName,
-      number: newNumber,
       id: persons.length + 1,
+      name: newName,
+      number: newNumber
     };
     if (persons.find(item => item.name === newName)) {
       alert(`${newName} already added in the List.`);
