@@ -53,7 +53,8 @@ personsRouter.post("/", async (req, res, next) => {
     return res.status(401).json({ error: "token missing or invalid" });
   }
 
-  const user = await User.findById(body.userId);
+  const user = await User.findById(decodedToken.id);
+  console.log('user :', user);
 
   if (!body.name) {
     return res.status(400).json({
@@ -61,14 +62,15 @@ personsRouter.post("/", async (req, res, next) => {
     });
   } else {
     const person = new Person({
+      user: user._id,
       name: body.name,
       number: body.number,
       id: body.id,
-      user: user._id
     });
     try {
       const savedPerson = await person.save();
       user.persons = user.persons.concat(savedPerson._id);
+      console.log('savedPerson :', savedPerson);
       await user.save();
       res.json(savedPerson.toJSON());
     } catch (exception) {

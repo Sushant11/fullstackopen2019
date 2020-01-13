@@ -11,8 +11,7 @@ const personSchema = new mongoose.Schema({
     minlength: 5,
     required: true
   },
-  id: Number,
-  users: [
+  user: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
