@@ -19,11 +19,20 @@ const App = props => {
     personService.getAll().then(response => setPersons(response.data));
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedPhonebookUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      personService.setToken(user.token);
+    }
+  }, []);
+
   const addPerson = e => {
     e.preventDefault();
 
     const personObject = {
-      id: persons.length + 1,
+      // id: persons.length + 1,
       name: newName,
       number: newNumber
     };
@@ -32,10 +41,10 @@ const App = props => {
       setNewName("");
     } else {
       personService.create(personObject).then(response => {
-        setPersons(persons.concat(response.data));
+        setPersons(persons.concat(response));
         setNewName("");
         setNewNubmer("");
-        setErrorMessage("Added");
+        setErrorMessage("New Person Added!");
       });
     }
   };
@@ -66,7 +75,9 @@ const App = props => {
         password
       });
 
-      personService.setToken(user.token)
+      window.localStorage.setItem("loggedPhonebookUser", JSON.stringify(user));
+
+      personService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
@@ -76,6 +87,11 @@ const App = props => {
         setErrorMessage(null);
       }, 5000);
     }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("loggedPhonebookUser");
+    window.location.reload();
   };
 
   const rows = () =>
@@ -90,34 +106,37 @@ const App = props => {
   return (
     <div>
       <Notification message={errorMessage} />
-     
 
-      {user === null ?
-      <Fragment> <h4>Login</h4> 
-      <Login 
-      username={username}
-      password={password}
-      setUsername={setUsername}
-      setPassword={setPassword}
-      handleLogin={handleLogin}
-      /> </Fragment>
-     :
-     <Fragment>
-     <h2>Phonebook</h2>
-     <p>{user.name} logged in</p>
-     <PersonForm
-       addPerson={addPerson}
-       newName={newName}
-       newNumber={newNumber}
-       handleNumberChange={handleNumberChange}
-       handleNameChange={handleNameChange}
-     />
-     <h2>Numbers</h2>
-     {rows()}
-     </Fragment>
-    }
-   
-     
+      {user === null ? (
+        <Fragment>
+          {" "}
+          <h4>Login</h4>
+          <Login
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+          />{" "}
+        </Fragment>
+      ) : (
+        <Fragment>
+          <h2>Phonebook</h2>
+          <p>
+            {user.name} Logged In.{" "}
+            <button onClick={handleLogout}>Logout</button>
+          </p>
+          <PersonForm
+            addPerson={addPerson}
+            newName={newName}
+            newNumber={newNumber}
+            handleNumberChange={handleNumberChange}
+            handleNameChange={handleNameChange}
+          />
+          <h2>Numbers</h2>
+          {persons.length === 0 ? <p>No Data</p> : rows()}
+        </Fragment>
+      )}
     </div>
   );
 };

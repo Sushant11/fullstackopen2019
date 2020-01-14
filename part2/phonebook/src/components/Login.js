@@ -30,7 +30,7 @@ const Login =  props => {
           </tr>
           <tr>
             <td>
-              <button type="submit">login</button>
+              <button type="submit">Login</button>
             </td>
           </tr>
         </tbody>
