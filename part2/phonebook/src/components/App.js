@@ -5,6 +5,7 @@ import Persons from "./Persons";
 import personService from "../services/persons";
 import loginService from "../services/login";
 import Notification from "./Notification";
+import { Container, Row, Col, Card, Button, Alert } from "react-bootstrap";
 
 const App = props => {
   const [persons, setPersons] = useState([]);
@@ -94,11 +95,24 @@ const App = props => {
     window.location.reload();
   };
 
+  const styles = {
+    width: "30%",
+    padding: "30px",
+    margin: "auto"
+  };
+
+  const stylesMain = {
+    width: "45%",
+    padding: "20px",
+    margin: "auto"
+  };
+
   const rows = () =>
     persons.map(person => (
       <Persons
         key={person.id}
         person={person}
+        persons={persons}
         handleDelete={() => handleDelete(person.id)}
       />
     ));
@@ -109,33 +123,44 @@ const App = props => {
 
       {user === null ? (
         <Fragment>
-          {" "}
-          <h4>Login</h4>
-          <Login
-            username={username}
-            password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-          />{" "}
+          <Container>
+            {" "}
+            <Card style={styles}>
+              <Col md="auto" className="mx-auto">
+                {" "}
+                <h4>Login</h4>
+                <Login
+                  username={username}
+                  password={password}
+                  setUsername={setUsername}
+                  setPassword={setPassword}
+                  handleLogin={handleLogin}
+                />
+              </Col>
+            </Card>
+          </Container>
         </Fragment>
       ) : (
-        <Fragment>
-          <h2>Phonebook</h2>
-          <p>
+        <Container>
+          <Card style={stylesMain}>
+            <h3>Phonebook</h3>
+            <PersonForm
+              addPerson={addPerson}
+              newName={newName}
+              newNumber={newNumber}
+              handleNumberChange={handleNumberChange}
+              handleNameChange={handleNameChange}
+            />
+            <h4>Numbers</h4>
+            {persons.length === 0 ? <Alert variant='warning'>No Data</Alert> : rows()}
+          </Card>
+          <div className="mt-3" style={{textAlign: 'center'}}>
             {user.name} Logged In.{" "}
-            <button onClick={handleLogout}>Logout</button>
-          </p>
-          <PersonForm
-            addPerson={addPerson}
-            newName={newName}
-            newNumber={newNumber}
-            handleNumberChange={handleNumberChange}
-            handleNameChange={handleNameChange}
-          />
-          <h2>Numbers</h2>
-          {persons.length === 0 ? <p>No Data</p> : rows()}
-        </Fragment>
+            <Button variant="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        </Container>
       )}
     </div>
   );
