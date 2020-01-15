@@ -13,7 +13,7 @@ const PersonForm = props => {
     <Form.Control type="number" placeholder="Contact Details"  value={props.newNumber}
               onChange={props.handleNumberChange}/>
   </Form.Group>
-  <Button variant="info">
+  <Button variant="info" type="submit">
     Add
   </Button>
     </Form>
