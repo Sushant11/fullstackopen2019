@@ -5,6 +5,7 @@ import Persons from "./Persons";
 import personService from "../services/persons";
 import loginService from "../services/login";
 import Notification from "./Notification";
+import '.././index.css'
 import { Container, Row, Col, Card, Button, Alert } from "react-bootstrap";
 
 const App = props => {
@@ -96,9 +97,9 @@ const App = props => {
   };
 
   const styles = {
-    width: "30%",
     padding: "30px",
-    margin: "auto"
+    width: "20rem",
+    margin: 'auto'
   };
 
   const stylesMain = {
@@ -123,9 +124,7 @@ const App = props => {
 
       {user === null ? (
         <Fragment>
-          <Container>
-            {" "}
-            <Card style={styles}>
+            <Card style={styles} className='resp-login'>
               <Col md="auto" className="mx-auto">
                 {" "}
                 <h4>Login</h4>
@@ -138,11 +137,10 @@ const App = props => {
                 />
               </Col>
             </Card>
-          </Container>
         </Fragment>
       ) : (
         <Container>
-          <Card style={stylesMain}>
+          <Card style={stylesMain} className='resp-main'>
             <h3>Phonebook</h3>
             <PersonForm
               addPerson={addPerson}
