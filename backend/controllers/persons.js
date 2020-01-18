@@ -61,7 +61,6 @@ personsRouter.post("/", async (req, res, next) => {
     });
     try {
       const savedPerson = await person.save();
-      console.log('savedPerson :', savedPerson);
       user.persons = user.persons.concat(savedPerson._id);
       await user.save();
       res.json(savedPerson.toJSON());

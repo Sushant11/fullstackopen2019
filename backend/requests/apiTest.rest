@@ -12,15 +12,15 @@
 
 # GET http://localhost:3001/api/users
 # 
-GET http://localhost:3001/api/persons
+# GET http://localhost:3001/api/persons
 # 
 # POST  http://localhost:3001/api/users
 # Content-Type: application/json
 
 # {
-#     "username" : "chtre",
+#     "username" : "chtree",
 #     "name" : "Sushant",
-#     "password" : "meropassword"
+#     "password" : "Asdfgh1!"
 # }
 
 # POST  http://localhost:3001/api/login

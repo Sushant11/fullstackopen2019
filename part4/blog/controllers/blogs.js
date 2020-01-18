@@ -12,7 +12,7 @@ const getTokenFrom = request => {
 };
 
 blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
+  const blogs = await Blog.find({}).populate("blog", { title: 1, author: 1, url: 1 });
   response.json(blogs.map(blog => blog.toJSON()));
   // Blog.find({}).then(blogs => {
   //   response.json(blogs);
@@ -31,15 +31,17 @@ blogsRouter.post("/", async (request, response, next) => {
       return response.status(401).json({ error: "token missing or invalid" });
     }
 
-    const user = await User.findById(body.userId);
+    const user = await User.findById(decodedToken.id);
+    console.log('body :', body);
+    console.log('User :', User);
 
     const blog = new Blog({
+      user: user._id,
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes,
       date: new Date(),
-      user: user._id
     });
 
     const savedBlog = await blog.save();
