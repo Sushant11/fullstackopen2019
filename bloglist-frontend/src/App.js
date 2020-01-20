@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, Fragment } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -5,14 +6,15 @@ import Login from './components/Login'
 import Blog from './components/Blog'
 import AddBlog from './components/AddBlog'
 import Togglable from './components/Toggable'
+import { useField } from './Hooks/index'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  // const [username, setUsername] = useState('')
+  // const [password, setPassword] = useState('')
+  // const [title, setTitle] = useState('')
+  // const [author, setAuthor] = useState('')
+  // const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [loginVisible, setLoginVisible] = useState(null)
@@ -20,22 +22,26 @@ const App = () => {
   const hideWhenVisible = { display: loginVisible ? 'none' : '' }
   const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
+  const username = useField('text')
+  const password = useField('password')
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
+
   const noteFormRef = React.createRef()
 
   const handleLogin = async event => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username,
-        password
+        username : username.value,
+        password : password.value
       })
 
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -54,37 +60,19 @@ const App = () => {
     noteFormRef.current.toggleVisibility()
 
     const blogObject = {
-      title: title,
-      author: author,
-      url: url
+      title: title.value,
+      author: author.value,
+      url: url.value
     }
     blogService.create(blogObject).then(response => {
       setBlogs(blogs.concat(response))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setErrorMessage('New Blog Added!')
     })
   }
 
-  const handleTitle = e => {
-    setTitle(e.target.value)
-  }
-  const handleUrl = e => {
-    setUrl(e.target.value)
-  }
-
-  const handleAuthor = e => {
-    setAuthor(e.target.value)
-  }
-
-  const handleUsername = e => {
-    setUsername(e.target.value)
-  }
-
-  const handlePassword = e => {
-    setPassword(e.target.value)
-  }
+  // const handleTitle = e => {
+  //   setTitle(e.target.value)
+  // }
 
   useEffect(() => {
     blogService.getAll().then(response => setBlogs(response))
@@ -111,8 +99,6 @@ const App = () => {
             <Login
               username={username}
               password={password}
-              handleUsername={handleUsername}
-              handlePassword={handlePassword}
               handleLogin={handleLogin}
             />
             <br/>
@@ -127,12 +113,6 @@ const App = () => {
               title={title}
               author={author}
               url={url}
-              setAuthor={setAuthor}
-              setTitle={setTitle}
-              setUrl={setUrl}
-              handleAuthor={handleAuthor}
-              handleTitle={handleTitle}
-              handleUrl={handleUrl}
             />
           </Togglable>
           <Blog blog={blogs} user={user} logout={handleLogout} />
