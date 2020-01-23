@@ -10,14 +10,15 @@ const counterReducer = (state = initialState, action) => {
   // eslint-disable-next-line default-case
   switch (action.type) {
     case "GOOD":
-      return [...state, state.good];
+      return {...state, good: state.good + 1};
     case "OK":
-      return state;
+      return {...state, ok: state.ok + 1};
     case "BAD":
-      return state;
-    case "ZERO":
-      return state;
+      return {...state , bad : state.bad + 1};
+    case "RESET":
+      return initialState;
   }
+  console.log("state :", state);
   return state;
 };
 
