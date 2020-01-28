@@ -51,7 +51,9 @@ const anecdoteReducer = (state = initialState, action) => {
      return state.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote)
 
      case 'Add':
-       return state.concat(action.data)
+      //  return state.concat(action.data)
+      const newAnecdote = asObject(action.data.content);
+      return [...state, newAnecdote];
  }
 
   return state

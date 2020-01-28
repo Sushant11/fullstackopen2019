@@ -1,16 +1,14 @@
 import React from "react";
-import Notification from './components/Notification'
-import AnecdoteForm from "./components/AnecdoteForm";
-import AnecdoteList from "./components/AnecdoteList";
+import ConnectedForm from "./components/AnecdoteForm";
+import ConnectedAnectodeList from "./components/AnecdoteList";
+import ConnectedNotification from "./components/Notification";
 
-const App = props => {
-  const store = props.store;
-
+const App = () => {
   return (
     <div>
-      <Notification store={store}/>
-      <AnecdoteList store={store}/>
-      <AnecdoteForm store={store} />
+      <ConnectedNotification />
+      <ConnectedAnectodeList />
+      <ConnectedForm />
     </div>
   );
 };
