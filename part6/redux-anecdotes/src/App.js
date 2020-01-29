@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import ConnectedForm from "./components/AnecdoteForm";
 import ConnectedAnectodeList from "./components/AnecdoteList";
 import ConnectedNotification from "./components/Notification";
+import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 
-const App = () => {
+const App = props => {
+  useEffect(() => {
+    props.initializeAnecdotes();
+  }, []);
   return (
     <div>
       <ConnectedNotification />
@@ -13,4 +18,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default connect(null, { initializeAnecdotes })(App);

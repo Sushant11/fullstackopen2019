@@ -4,12 +4,13 @@ import { add } from "../reducers/anecdoteReducer";
 import { newAnecdote } from "../reducers/notificationReducer";
 
 const AnecdoteForm = (props) => {
-  const addNew = e => {
+  const addNew = async e => {
     e.preventDefault();
     const content = e.target.anecdote.value;
-    props.add(content);
+    // props.add(content);
     props.newAnecdote(`Added : "${content}`);
     e.target.anecdote.value = "";
+    props.add(content)
   };
   return (
     <div>
