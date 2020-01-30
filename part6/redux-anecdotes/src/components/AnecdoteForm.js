@@ -1,21 +1,21 @@
-import React from "react";
-import {connect} from 'react-redux'
-import { add } from "../reducers/anecdoteReducer";
-import { newAnecdote } from "../reducers/notificationReducer";
+import React from 'react';
+import { connect } from 'react-redux';
+import { createAnecdote } from '../reducers/anecdoteReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
 const AnecdoteForm = (props) => {
-  const addNew = async e => {
-    e.preventDefault();
-    const content = e.target.anecdote.value;
-    // props.add(content);
-    props.newAnecdote(`Added : "${content}`);
-    e.target.anecdote.value = "";
-    props.add(content)
-  };
+    const addAnecdote = async (event) => {
+        event.preventDefault();
+        const anecdote = event.target.anecdote.value;
+        console.log(anecdote);
+        event.target.anecdote.value = '';
+        props.createAnecdote(anecdote);
+        props.setNotification('Added new anecdote', 5);
+    };
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={addNew}>
+      <form onSubmit={addAnecdote}>
         <div>
           <input name="anecdote" />
         </div>
@@ -27,7 +27,8 @@ const AnecdoteForm = (props) => {
 
 
 const mapDispatchToProps = {
-  add, newAnecdote
+  createAnecdote,
+  setNotification
 }
 
 const ConnectedForm = connect(null, mapDispatchToProps)(AnecdoteForm)

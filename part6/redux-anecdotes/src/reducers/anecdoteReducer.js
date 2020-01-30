@@ -1,71 +1,64 @@
-/* eslint-disable default-case */
-import anecdoteService from '../services/anecdotes'
-
-const anecdotesAtStart = [];
+import anecdoteService from '../services/anecdotes';
 
 const getId = () => (100000 * Math.random()).toFixed(0);
 
-export const vote = id => {
-  return {
-    type: "Vote",
-    data: { id }
-  };
+export const asObject = (anecdote) => {
+    return {
+        content : anecdote,
+        id      : getId(),
+        votes   : 0
+    };
 };
 
-export const add = content => {
-  return async dispatch => {
-    const newAnecdote = await anecdoteService.createNew(content)
-    dispatch({
-      type: "Add",
-      data: newAnecdote
-    })
-  }
+const reducer = (state = [], action) => {
+    console.log('state now: ', state);
+    console.log('action', action);
+
+    switch (action.type) {
+        case 'INCREMENT':
+            const id = action.data.id;
+            const anecdoteToChange = state.find((a) => a.id === id);
+            const changedAnecdote = { ...anecdoteToChange, votes: anecdoteToChange.votes + 1 };
+            const newAnecdotes = state.map((anecdote) => (anecdote.id === id ? changedAnecdote : anecdote));
+            return newAnecdotes;
+        case 'ADD':
+            const anecdote = action.data.anecdote;
+            return [ ...state, anecdote ];
+        case 'INIT':
+            return action.data;
+        default:
+            return state;
+    }
 };
 
-const asObject = anecdote => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  };
+export const initAnecdotes = () => {
+    return async (dispatch) => {
+        const anecdotes = await anecdoteService.getAll();
+        dispatch({
+            type : 'INIT',
+            data : anecdotes
+        });
+    };
 };
 
-export const initializeAnecdotes = () => {
-  return async dispatch => {
-    const anecdotes = await anecdoteService.getAll();
-    console.log('anecdotes :', anecdotes);
-    dispatch({
-      type: "INIT_ANECDOTES",
-      data: anecdotes
-    });
-  };
+export const createAnecdote = (anecdote) => {
+    return async (dispatch) => {
+        const addedAnecdote = await anecdoteService.createNew(anecdote);
+        dispatch({
+            type : 'ADD',
+            data : { anecdote: addedAnecdote }
+        });
+    };
 };
 
-const initialState = anecdotesAtStart.map(asObject);
-
-const anecdoteReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case "Vote":
-      const id = action.data.id;
-      const anecdoteToChange = state.find(n => n.id === id);
-      const changedAnecdote = {
-        ...anecdoteToChange,
-        votes: anecdoteToChange.votes + 1
-      };
-      return state.map(anecdote =>
-        anecdote.id !== id ? anecdote : changedAnecdote
-      );
-
-    case "Add":
-      //  return state.concat(action.data)
-      const newAnecdote = asObject(action.data.content);
-      return [...state, newAnecdote];
-
-    case "INIT_ANECDOTES":
-      return action.data;
-  }
-
-  return state;
+export const addVote = (id) => {
+    return async (dispatch) => {
+        await anecdoteService.addVote(id);
+        dispatch({
+            type : 'INCREMENT',
+            data : { id }
+        });
+    };
 };
 
-export default anecdoteReducer;
+export default reducer;

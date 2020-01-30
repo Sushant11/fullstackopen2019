@@ -1,35 +1,42 @@
-const initialState = "No Notificaiton";
+const initialState = '';
 
-const notificationReducer = (state = initialState, action) => {
-  // eslint-disable-next-line default-case
-  switch (action.type) {
-    case "VOTE_NOTIFY":
-      return action.notification;
-    case "NEW_ANECDOTE":
-      return action.notification
-  }
-  return state
+const reducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'SET_NOTIFICATION':
+            return action.notification;
+        case 'RESET_NOTIFICATION':
+            return initialState;
+        default:
+            return state;
+    }
 };
 
-export const voteNotify = notification => {
-  return ({
-    type: "VOTE_NOTIFY",
-    notification 
-  });
+export const notificationChange = (notification) => {
+    return {
+        type         : 'SET_NOTIFICATION',
+        notification
+    };
 };
 
-export const noNotification = () => {
-  return{
-    type: "EMPTY",
-    notification: null
-  }
+export const notificationReset = () => {
+    return { type: 'RESET_NOTIFICATION' };
 };
 
-export const newAnecdote = (content) => {
-  return {
-    type: "NEW_ANECDOTE",
-    notification: content
-  }
-}
+export const setNotification = (notification, timeInSeconds) => {
+    const timeInMilliseconds = timeInSeconds * 2000;
 
-export default notificationReducer;
+    return (dispatch) => {
+        dispatch({
+            type         : 'SET_NOTIFICATION',
+            notification
+        });
+
+        setTimeout(() => {
+            dispatch({
+                type : 'RESET_NOTIFICATION'
+            });
+        }, timeInMilliseconds);
+    };
+};
+
+export default reducer;
