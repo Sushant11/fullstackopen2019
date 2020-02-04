@@ -21,7 +21,7 @@ const Menu = ({anecdotes, addNew, anecdoteById, notification}) => {
       </div>
 
       <Route exact path='/' render={() => <AnecdoteList anecdotes={anecdotes} notification={notification}/>}></Route>
-      <Route exact path='/create' render={() => <CreateNew addNew={addNew}/>}></Route>
+      <Route exact path='/create' render={() => notification ?<AnecdoteList anecdotes={anecdotes} notification={notification}/> : <CreateNew addNew={addNew}/>}></Route>
       <Route exact path='/about' render={() => <About/>}></Route>
       <Route exact path='/anecdotes/:id' render={({match}) => <Anecdote anecdote={anecdoteById(match.params.id)}/>}></Route>
       </div>
@@ -154,13 +154,14 @@ const App = () => {
     }
   ]);
 
-  const [notification, setNotification] = useState("Notification");
+  const [notification, setNotification] = useState("");
 
   const addNew = anecdote => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`New Anecdote ${anecdote.content} added!`)
     setTimeout(() => {
-      setNotification('New Anecdote Added');
+      setNotification('');
     }, 3000);
   };
 
