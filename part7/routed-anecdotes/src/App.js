@@ -21,7 +21,8 @@ const Menu = ({anecdotes, addNew, anecdoteById, notification}) => {
       </div>
 
       <Route exact path='/' render={() => <AnecdoteList anecdotes={anecdotes} notification={notification}/>}></Route>
-      <Route exact path='/create' render={() => notification ?<AnecdoteList anecdotes={anecdotes} notification={notification}/> : <CreateNew addNew={addNew}/>}></Route>
+      {/* <Route exact path='/create' render={() => notification ?<AnecdoteList anecdotes={anecdotes} notification={notification}/> : <CreateNew addNew={addNew}/>}></Route> */}
+      <Route exact path='/create' render={() => notification ?<Redirect to='/'/> : <CreateNew addNew={addNew}/>}></Route>
       <Route exact path='/about' render={() => <About/>}></Route>
       <Route exact path='/anecdotes/:id' render={({match}) => <Anecdote anecdote={anecdoteById(match.params.id)}/>}></Route>
       </div>
