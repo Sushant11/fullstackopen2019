@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from "react";
 
 const App = () => {
-    return (
-        <div>
-            Hello Webpack
-        </div>
-    );
+  const [counter, setCounter] = useState(0);
+  const [values, setVlues] = useState([])
+
+  const handleClick = () => {
+      setCounter(counter+1);
+      setVlues(values.concat(counter))
+  }
+
+  return (
+  <div className="container">
+      Hello Webpack {counter}<br/>
+      <button onClick={handleClick}>Click</button>
+    </div>
+    )
 };
 
 export default App;
