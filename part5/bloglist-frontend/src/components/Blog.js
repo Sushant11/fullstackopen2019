@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 const Blog = ({ blog, user, logout }) => {
   return (
     <div>
@@ -8,7 +8,7 @@ const Blog = ({ blog, user, logout }) => {
         <div key={item.id}>{item.title}</div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

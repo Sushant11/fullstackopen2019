@@ -1,16 +1,16 @@
-import axios from "axios";
-const baseUrl = "http://localhost:3001/api/blogs";
+import axios from 'axios'
+const baseUrl = 'http://localhost:3001/api/blogs'
 
-let token = null;
+let token = null
 
 const setToken = newToken => {
-  token = `bearer ${newToken}`;
-};
+  token = `bearer ${newToken}`
+}
 
 const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then(response => response.data);
-};
+  const request = axios.get(baseUrl)
+  return request.then(response => response.data)
+}
 
 const create = async newObject => {
   const config = {
@@ -21,4 +21,4 @@ const create = async newObject => {
   return response.data
 }
 
-export default { getAll, setToken, create };
+export default { getAll, setToken, create }
