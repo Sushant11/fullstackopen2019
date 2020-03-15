@@ -1,91 +1,87 @@
+import React, { useState, useEffect, Fragment } from "react";
+import { connect } from 'react-redux';
+import { initBlogs, addBlog } from './reducers/blogReducer'
 
-import React, { useState, useEffect, Fragment } from 'react'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import Login from './components/Login'
-import Blog from './components/Blog'
-import AddBlog from './components/AddBlog'
-import Togglable from './components/Toggable'
-import { useField } from './Hooks/index'
+import blogService from "./services/blogs";
+import loginService from "./services/login";
 
-const App = () => {
-  const [blogs, setBlogs] = useState([])
-  // const [username, setUsername] = useState('')
-  // const [password, setPassword] = useState('')
-  // const [title, setTitle] = useState('')
-  // const [author, setAuthor] = useState('')
-  // const [url, setUrl] = useState('')
-  const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(null)
+import Login from "./components/Login";
+import Blog from "./components/Blog";
+import AddBlog from "./components/AddBlog";
+import Togglable from "./components/Toggable";
+import { useField } from "./Hooks/index";
 
-  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-  const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
-  const username = useField('text')
-  const password = useField('password')
-  const title = useField('text')
-  const author = useField('text')
-  const url = useField('text')
+const App = (props) => {
+  const blogs = props.blogs
 
-  const noteFormRef = React.createRef()
+  const [user, setUser] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loginVisible, setLoginVisible] = useState(null);
+
+  const hideWhenVisible = { display: loginVisible ? "none" : "" };
+  const showWhenVisible = { display: loginVisible ? "" : "none" };
+
+  const username = useField("text");
+  const password = useField("password");
+  const title = useField("text");
+  const author = useField("text");
+  const url = useField("text");
+
+  const noteFormRef = React.createRef();
 
   const handleLogin = async event => {
-    event.preventDefault()
+    event.preventDefault();
     try {
       const user = await loginService.login({
-        username : username.value,
-        password : password.value
-      })
+        username: username.value,
+        password: password.value
+      });
 
-      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
+      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
 
-      blogService.setToken(user.token)
-      setUser(user)
+      blogService.setToken(user.token);
+      setUser(user);
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage("Wrong credentials");
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+        setErrorMessage(null);
+      }, 5000);
     }
-  }
+  };
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogUser')
-    window.location.reload()
-  }
+    window.localStorage.removeItem("loggedBlogUser");
+    window.location.reload();
+  };
 
   const handleNew = e => {
-    e.preventDefault()
-    noteFormRef.current.toggleVisibility()
+    e.preventDefault();
+    noteFormRef.current.toggleVisibility();
 
     const blogObject = {
       title: title.value,
       author: author.value,
       url: url.value
-    }
+    };
     blogService.create(blogObject).then(response => {
-      setBlogs(blogs.concat(response))
-      setErrorMessage('New Blog Added!')
-    })
-  }
-
-  // const handleTitle = e => {
-  //   setTitle(e.target.value)
-  // }
+      addBlog(blogs.concat(response));
+      setErrorMessage("New Blog Added!");
+    });
+  };
 
   useEffect(() => {
-    blogService.getAll().then(response => setBlogs(response))
-  }, [])
+    props.initBlogs()
+  }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
     }
-  }, [])
+  }, []);
 
   return (
     <div className="App">
@@ -101,7 +97,7 @@ const App = () => {
               password={password}
               handleLogin={handleLogin}
             />
-            <br/>
+            <br />
             <button onClick={() => setLoginVisible(false)}>Cancel</button>
           </div>
         </div>
@@ -119,7 +115,19 @@ const App = () => {
         </Fragment>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default App
+const mapStateToProps = state => {
+  return {
+    blogs: state.blogs,
+    user: state.user
+  };
+};
+
+const mapDispatchToProps = {
+  initBlogs,
+  addBlog
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
